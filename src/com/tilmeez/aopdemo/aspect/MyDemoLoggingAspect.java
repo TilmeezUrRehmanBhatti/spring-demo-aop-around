@@ -40,7 +40,10 @@ public class MyDemoLoggingAspect {
             myLogger.warning(e.getMessage());
 
             // give user a custom message
-            result = "Major Accident!!! but don't worries , it will be clear in 5 minutes";
+//            result = "Major Accident!!! but don't worries , it will be clear in 5 minutes";
+
+            // rethrow exception
+            throw e;
         }
 
         // get end timestamp
