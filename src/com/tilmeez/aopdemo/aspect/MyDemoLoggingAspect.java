@@ -1,6 +1,7 @@
 package com.tilmeez.aopdemo.aspect;
 
 import com.tilmeez.aopdemo.Account;
+import com.tilmeez.aopdemo.AroundHandleExceptionDemoApp;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -9,11 +10,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Aspect
 @Component
 @Order(2)
 public class MyDemoLoggingAspect {
+    private static Logger myLogger =
+            Logger.getLogger(AroundHandleExceptionDemoApp.class.getName());
 
     @Around("execution(* com.tilmeez.aopdemo.service.*.getFortune(..))")
     public Object aroundGetFortune(
@@ -27,7 +31,17 @@ public class MyDemoLoggingAspect {
         long begin = System.currentTimeMillis();
 
         // new, let's execute the method
-        Object result = theProceedingJoinPoint.proceed();
+        Object result = null;
+
+        try {
+            result = theProceedingJoinPoint.proceed();
+        } catch (Throwable e) {
+            // log the exception
+            myLogger.warning(e.getMessage());
+
+            // give user a custom message
+            result = "Major Accident!!! but don't worries , it will be clear in 5 minutes";
+        }
 
         // get end timestamp
         long end = System.currentTimeMillis();
